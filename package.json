@@ -1,0 +1,29 @@
+{
+  "name": "@anderjason/tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:anderjason/tests.git"
+  },
+  "author": "Jason Anderson",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf dist && rm -rf test",
+    "test": "tsc -p tsconfig.test.json && node test/index.test && rm -rf test"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  },
+  "bugs": {
+    "url": "https://github.com/anderjason/tests/issues"
+  },
+  "homepage": "https://github.com/anderjason/tests#readme"
+}
