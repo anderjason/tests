@@ -18,10 +18,10 @@
   "files": [
     "dist/**/*"
   ],
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "typescript": "^4.0.2"
   },
+  "devDependencies": {},
   "bugs": {
     "url": "https://github.com/anderjason/tests/issues"
   },

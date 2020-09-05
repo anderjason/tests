@@ -32,10 +32,6 @@ function isArguments(object: any) {
   return Object.prototype.toString.call(object) == "[object Arguments]";
 }
 
-function isUndefinedOrNull(value: any) {
-  return value == null;
-}
-
 function isBuffer(x: any) {
   if (!x || typeof x !== "object" || typeof x.length !== "number") {
     return false;
@@ -55,7 +51,7 @@ function isBuffer(x: any) {
 function objEquiv(a: any, b: any) {
   let i, key;
 
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
+  if (a == null || b == null) {
     return false;
   }
 
