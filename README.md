@@ -1,5 +1,7 @@
 # @anderjason/tests
 
+A simple, lightweight test system for Typescript projects.
+
 ## Installation
 
 `npm install --save @anderjason/tests`
@@ -69,6 +71,11 @@ Test.define("Hello has 5 characters", () => {
 Test.define("Hello has 3 characters", () => {
   // this test will fail
   Test.assert("hello".length === 3);
+});
+
+// You can use async tests too
+Test.define("This callback returns Promise<void>", async () => {
+
 });
 ```
 
