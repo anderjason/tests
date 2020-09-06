@@ -28,26 +28,6 @@ function objectIsDeepEqual(a: any, b: any): boolean {
   }
 }
 
-function isArguments(object: any) {
-  return Object.prototype.toString.call(object) == "[object Arguments]";
-}
-
-function isBuffer(x: any) {
-  if (!x || typeof x !== "object" || typeof x.length !== "number") {
-    return false;
-  }
-
-  if (typeof x.copy !== "function" || typeof x.slice !== "function") {
-    return false;
-  }
-
-  if (x.length > 0 && typeof x[0] !== "number") {
-    return false;
-  }
-
-  return true;
-}
-
 function objEquiv(a: any, b: any) {
   let i, key;
 
@@ -57,33 +37,6 @@ function objEquiv(a: any, b: any) {
 
   if (a.prototype !== b.prototype) {
     return false;
-  }
-
-  if (isArguments(a)) {
-    if (!isArguments(b)) {
-      return false;
-    }
-    a = Array.prototype.slice.call(a);
-    b = Array.prototype.slice.call(b);
-    return objectIsDeepEqual(a, b);
-  }
-
-  if (isBuffer(a)) {
-    if (!isBuffer(b)) {
-      return false;
-    }
-
-    if (a.length !== b.length) {
-      return false;
-    }
-
-    for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   let ka, kb;
