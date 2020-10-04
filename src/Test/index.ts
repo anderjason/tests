@@ -2,6 +2,14 @@ let currentAssertionIndex: number = 0;
 
 export type TestFunction = () => Promise<any> | void;
 
+export class AssertError extends Error {
+  constructor(m: string) {
+    super(m);
+
+    Object.setPrototypeOf(this, AssertError.prototype);
+  }
+}
+
 async function asyncSequenceGivenArrayAndCallback<T>(
   array: T[],
   fn: (item: T, idx: number, array: T[]) => Promise<any>
@@ -90,7 +98,7 @@ export class Test {
     currentAssertionIndex += 1;
 
     if (!value) {
-      throw new Error(
+      throw new AssertError(
         failedMessage || `Assertion ${currentAssertionIndex} failed`
       );
     }
@@ -106,11 +114,29 @@ export class Test {
       await fn();
 
       // fn is expected to throw, so if we get here, it's an error
-      throw new Error(
+      throw new AssertError(
         failedMessage || `Assertion ${currentAssertionIndex} failed`
       );
-    } catch {
-      // OK
+    } catch (err) {
+      if (err instanceof AssertError) {
+        throw err;
+      } else {
+        // OK
+      }
+    }
+  }
+
+  static assertIsEqual(
+    actual: any,
+    expected: any,
+    failedMessage?: string
+  ): void {
+    currentAssertionIndex += 1;
+
+    if (actual !== expected) {
+      throw new AssertError(
+        failedMessage || `Assertion ${currentAssertionIndex} failed`
+      );
     }
   }
 
@@ -122,7 +148,7 @@ export class Test {
     currentAssertionIndex += 1;
 
     if (!objectIsDeepEqual(actual, expected)) {
-      throw new Error(
+      throw new AssertError(
         failedMessage || `Assertion ${currentAssertionIndex} failed`
       );
     }

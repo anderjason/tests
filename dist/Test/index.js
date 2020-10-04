@@ -1,7 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Test = void 0;
+exports.Test = exports.AssertError = void 0;
 let currentAssertionIndex = 0;
+class AssertError extends Error {
+    constructor(m) {
+        super(m);
+        Object.setPrototypeOf(this, AssertError.prototype);
+    }
+}
+exports.AssertError = AssertError;
 async function asyncSequenceGivenArrayAndCallback(array, fn) {
     if (array == null) {
         return;
@@ -25,53 +32,13 @@ function objectIsDeepEqual(a, b) {
         return objEquiv(a, b);
     }
 }
-function isArguments(object) {
-    return Object.prototype.toString.call(object) == "[object Arguments]";
-}
-function isUndefinedOrNull(value) {
-    return value == null;
-}
-function isBuffer(x) {
-    if (!x || typeof x !== "object" || typeof x.length !== "number") {
-        return false;
-    }
-    if (typeof x.copy !== "function" || typeof x.slice !== "function") {
-        return false;
-    }
-    if (x.length > 0 && typeof x[0] !== "number") {
-        return false;
-    }
-    return true;
-}
 function objEquiv(a, b) {
     let i, key;
-    if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
+    if (a == null || b == null) {
         return false;
     }
     if (a.prototype !== b.prototype) {
         return false;
-    }
-    if (isArguments(a)) {
-        if (!isArguments(b)) {
-            return false;
-        }
-        a = Array.prototype.slice.call(a);
-        b = Array.prototype.slice.call(b);
-        return objectIsDeepEqual(a, b);
-    }
-    if (isBuffer(a)) {
-        if (!isBuffer(b)) {
-            return false;
-        }
-        if (a.length !== b.length) {
-            return false;
-        }
-        for (i = 0; i < a.length; i++) {
-            if (a[i] !== b[i]) {
-                return false;
-            }
-        }
-        return true;
     }
     let ka, kb;
     try {
@@ -116,7 +83,7 @@ class Test {
     static assert(value, failedMessage) {
         currentAssertionIndex += 1;
         if (!value) {
-            throw new Error(failedMessage || `Assertion ${currentAssertionIndex} failed`);
+            throw new AssertError(failedMessage || `Assertion ${currentAssertionIndex} failed`);
         }
     }
     static async assertThrows(fn, failedMessage) {
@@ -124,16 +91,27 @@ class Test {
         try {
             await fn();
             // fn is expected to throw, so if we get here, it's an error
-            throw new Error(failedMessage || `Assertion ${currentAssertionIndex} failed`);
+            throw new AssertError(failedMessage || `Assertion ${currentAssertionIndex} failed`);
         }
-        catch (_a) {
-            // OK
+        catch (err) {
+            if (err instanceof AssertError) {
+                throw err;
+            }
+            else {
+                // OK
+            }
+        }
+    }
+    static assertIsEqual(actual, expected, failedMessage) {
+        currentAssertionIndex += 1;
+        if (actual !== expected) {
+            throw new AssertError(failedMessage || `Assertion ${currentAssertionIndex} failed`);
         }
     }
     static assertIsDeepEqual(actual, expected, failedMessage) {
         currentAssertionIndex += 1;
         if (!objectIsDeepEqual(actual, expected)) {
-            throw new Error(failedMessage || `Assertion ${currentAssertionIndex} failed`);
+            throw new AssertError(failedMessage || `Assertion ${currentAssertionIndex} failed`);
         }
     }
     static async runAll() {
