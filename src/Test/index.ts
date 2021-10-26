@@ -94,7 +94,7 @@ export class Test {
     Test._allTests.push(new Test(label, fn));
   }
 
-  static assert(value: boolean, failedMessage?: string): void {
+  static assert(value: boolean, failedMessage: string): void {
     currentAssertionIndex += 1;
 
     if (!value) {
@@ -106,7 +106,7 @@ export class Test {
 
   static async assertThrows(
     fn: () => any,
-    failedMessage?: string
+    failedMessage: string
   ): Promise<void> {
     currentAssertionIndex += 1;
 
@@ -129,7 +129,7 @@ export class Test {
   static assertIsEqual(
     actual: any,
     expected: any,
-    failedMessage?: string
+    failedMessage: string
   ): void {
     currentAssertionIndex += 1;
 
@@ -143,7 +143,7 @@ export class Test {
   static assertIsDeepEqual(
     actual: any,
     expected: any,
-    failedMessage?: string
+    failedMessage: string
   ): void {
     currentAssertionIndex += 1;
 
@@ -172,8 +172,12 @@ export class Test {
   async toPromise(): Promise<void> {
     currentAssertionIndex = 0;
 
+    console.log("-----");
     console.log(this.label);
+    console.log()
 
     await this._fn();
+
+    console.log();
   }
 }

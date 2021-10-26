@@ -121,8 +121,11 @@ class Test {
     }
     async toPromise() {
         currentAssertionIndex = 0;
+        console.log("-----");
         console.log(this.label);
+        console.log();
         await this._fn();
+        console.log();
     }
 }
 exports.Test = Test;
